@@ -195,7 +195,7 @@
           el("div", { class: "cat", text: c.label + (d.source === "dns" ? " · found in DNS" : "") }),
           el("div", { class: "name", text: d.name }),
           d.evidence.length ? el("div", { class: "ev", text: d.evidence.join("  ·  ") }) : null,
-          ...d.flags.map((f) => el("div", { class: "flag", text: "⚠ " + f }))
+          ...d.flags.map((f) => el("div", { class: "flag", text: f }))
         ),
         el("button", { class: "icon-btn", type: "button", "aria-label": "Remove " + d.name, onclick: () => {
           state.deps = state.deps.filter((x) => x !== d);
@@ -605,6 +605,22 @@
   $("#dl-md").addEventListener("click", exportMD);
   $("#print").addEventListener("click", () => window.print());
   $("#year").textContent = String(new Date().getFullYear());
+
+  /* nav: products dropdown + mobile menu (mirrors windsorsec.com) */
+  const pBtn = $("#products-btn"), pPanel = $("#products-panel");
+  pBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const open = pPanel.hidden;
+    pPanel.hidden = !open; pBtn.setAttribute("aria-expanded", String(open));
+  });
+  document.addEventListener("mousedown", (e) => {
+    if (!pPanel.hidden && !$("#products").contains(e.target)) { pPanel.hidden = true; pBtn.setAttribute("aria-expanded", "false"); }
+  });
+  const mBtn = $("#menu-btn"), mMenu = $("#mobile-menu");
+  mBtn.addEventListener("click", () => {
+    const open = mMenu.hidden;
+    mMenu.hidden = !open; mBtn.setAttribute("aria-expanded", String(open));
+  });
 
   renderManual();
 })();
