@@ -222,7 +222,7 @@ DC.MANUAL = [
 DC.IMPACT = [
   { v: 3, label: "Business stops" },
   { v: 2, label: "Major slowdown" },
-  { v: 1, label: "Annoying, we cope" },
+  { v: 1, label: "Annoying, we deal with it" },
   { v: 0, label: "Barely notice" }
 ];
 DC.FALLBACK = [
