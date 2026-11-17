@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src https://cloudflare-dns.com https://dns.google; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Dependency Check | Windsor Security</title>
+  <meta name="description" content="Free, open-source check that maps the outside services your business depends on and tells you where your next IT dollar should go. Runs entirely in your browser.">
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="https://windsorsec.com">
+        <img src="assets/favicon.png" alt="" width="28" height="28">
+        <span>Windsor Security</span>
+      </a>
+      <div class="nav-links">
+        <a href="#how">How it works</a>
+        <a href="https://github.com/joerein-iu/windsorsec-deps">Source</a>
+        <a class="btn btn-primary btn-sm" href="#check">Run the check</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Hero -->
+    <section class="hero">
+      <div class="wrap narrow">
+        <p class="eyebrow"><span class="eyebrow-dot"></span>Free · Open source · Runs in your browser</p>
+        <h1><span class="grad">Find the one outage that takes your business down.</span></h1>
+        <p class="lead">
+          Your business runs on other people's infrastructure: email, sign-in, DNS, payroll, payments, the internet line.
+          Dependency Check maps what you rely on, finds the single points of failure, and ranks where your next IT dollar
+          should go. You get a checklist for whoever runs your IT and a one-page budget priority list for the owner.
+        </p>
+
+        <form id="scan-form" class="scan" autocomplete="off">
+          <label for="domain" class="sr-only">Your business domain</label>
+          <input id="domain" name="domain" type="text" inputmode="url" spellcheck="false" placeholder="yourbusiness.com" required>
+          <button class="btn btn-primary" type="submit" id="scan-btn">Scan my domain</button>
+        </form>
+        <p class="fine">
+          We read public DNS records only, through Cloudflare's public resolver (Google's as a fallback).
+          Your answers never leave this page. There is no server, no account, and nothing is stored.
+        </p>
+        <p class="fine"><button type="button" class="linklike" id="skip-scan">No domain? Skip the scan and add things by hand.</button></p>
+      </div>
+    </section>
+
+    <!-- Step 1: discovered -->
+    <section id="check" class="section alt" hidden>
+      <div class="wrap narrow">
+        <div class="step-head">
+          <span class="step-num">1</span>
+          <div>
+            <h2>What you depend on</h2>
+            <p class="muted" id="scan-summary">Found from your public DNS records. Remove anything that's wrong.</p>
+          </div>
+        </div>
+        <div id="deps" class="dep-list"></div>
+
+        <div class="card">
+          <h3>Add what DNS can't see</h3>
+          <p class="muted small">Check everything your business uses. If it's critical, it belongs on the list.</p>
+          <div id="manual" class="chip-grid"></div>
+          <form id="custom-form" class="custom-add">
+            <input id="custom-name" type="text" placeholder="Something else (e.g. Clio, Toast, Dentrix)">
+            <button class="btn btn-ghost" type="submit">Add</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Step 2: per-dependency questions -->
+    <section id="step2" class="section" hidden>
+      <div class="wrap narrow">
+        <div class="step-head">
+          <span class="step-num">2</span>
+          <div>
+            <h2>If it went down for a full workday</h2>
+            <p class="muted">Three quick answers per dependency. Best guesses are fine.</p>
+          </div>
+        </div>
+        <div id="questions"></div>
+      </div>
+    </section>
+
+    <!-- Step 3: business-wide -->
+    <section id="step3" class="section alt" hidden>
+      <div class="wrap narrow">
+        <div class="step-head">
+          <span class="step-num">3</span>
+          <div>
+            <h2>The safety nets</h2>
+            <p class="muted">These decide whether a bad day becomes a bad month.</p>
+          </div>
+        </div>
+        <div id="globals" class="card"></div>
+        <div class="actions">
+          <button class="btn btn-primary btn-lg" id="build-report" type="button">Build my report</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Report -->
+    <section id="report" class="section" hidden>
+      <div class="wrap narrow">
+        <div class="report-head">
+          <div>
+            <p class="eyebrow"><span class="eyebrow-dot"></span>Your report</p>
+            <h2 id="report-title">Dependency Check</h2>
+            <p class="muted small" id="report-meta"></p>
+          </div>
+          <div class="export no-print">
+            <button class="btn btn-ghost btn-sm" id="dl-csv" type="button">Checklist (CSV)</button>
+            <button class="btn btn-ghost btn-sm" id="dl-md" type="button">Report (Markdown)</button>
+            <button class="btn btn-primary btn-sm" id="print" type="button">Print / PDF</button>
+          </div>
+        </div>
+
+        <div class="card owner">
+          <h3>For the owner: where your next IT dollar goes</h3>
+          <p class="muted small" id="owner-lede"></p>
+          <ol id="owner-list" class="owner-list"></ol>
+        </div>
+
+        <div class="stats" id="stats"></div>
+
+        <div class="card">
+          <h3>For your IT person: full checklist</h3>
+          <p class="muted small">Ranked by risk reduced per dollar. Hand this to whoever manages your IT.</p>
+          <div id="checklist"></div>
+        </div>
+
+        <div class="card map-card">
+          <h3>Dependency map</h3>
+          <div id="map" class="map"></div>
+        </div>
+
+        <p class="fine">
+          This is a structured self-assessment plus a passive read of public DNS. It doesn't scan your network or log in to anything,
+          and it isn't an audit. Results are only as good as the answers.
+        </p>
+        <div class="cta card no-print">
+          <h3>Want a second set of eyes?</h3>
+          <p class="muted">Windsor Security helps small teams close the gaps this report finds.</p>
+          <a class="btn btn-primary" href="https://windsorsec.com">Talk to Windsor Security</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section id="how" class="section alt no-print">
+      <div class="wrap narrow">
+        <h2>How it works</h2>
+        <div class="how-grid">
+          <div class="card">
+            <span class="mono teal">01 · Discover</span>
+            <h3>Read your public DNS</h3>
+            <p class="muted small">Your DNS records show who runs your email, your sign-in, your DNS and your website, plus which SaaS tools have verified your domain. It's public information, read the same way any mail server reads it.</p>
+          </div>
+          <div class="card">
+            <span class="mono teal">02 · Weigh</span>
+            <h3>Ask what an outage costs</h3>
+            <p class="muted small">For each dependency: what stops if it's down, whether you have a fallback, and whether more than one person can get into it.</p>
+          </div>
+          <div class="card">
+            <span class="mono teal">03 · Rank</span>
+            <h3>Spend where it counts</h3>
+            <p class="muted small">Every gap gets a risk score and a rough cost. Fixes are ranked by risk reduced per dollar, so the free and cheap wins come first.</p>
+          </div>
+        </div>
+        <div class="card why">
+          <h3>Why this exists</h3>
+          <p class="muted small">
+            In 2026 CISA discontinued several free assessments, including its External Dependencies Management assessment.
+            Small businesses rarely had access to those reviews anyway. Meanwhile one bad vendor update or cloud outage can stop thousands of
+            businesses that did nothing wrong. This is a free, open replacement for the part that matters most to small teams:
+            knowing what you depend on and what to do about it.
+            <a href="https://github.com/joerein-iu/windsorsec-deps">The methodology and scoring are in the repo.</a>
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer no-print">
+    <div class="wrap footer-grid">
+      <div>
+        <h3 class="teal">Windsor Security</h3>
+        <p class="muted small">Security tools you can check. Built on public sources, with the methodology in the open.</p>
+      </div>
+      <div>
+        <h4>Dependency Check</h4>
+        <ul>
+          <li><a href="#check">Run the check</a></li>
+          <li><a href="https://github.com/joerein-iu/windsorsec-deps">Source &amp; methodology</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Windsor</h4>
+        <ul>
+          <li><a href="https://windsorsec.com">windsorsec.com</a></li>
+          <li><a href="https://windsorsec.com/case-studies/">Findings</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="https://windsorsec.com/privacy/">Privacy Policy</a></li>
+          <li><a href="https://windsorsec.com/terms/">Terms of Service</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="wrap copyright">© <span id="year">2026</span> Windsor Security. MIT licensed.</div>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
