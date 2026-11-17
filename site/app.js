@@ -160,6 +160,16 @@
       if (name === "Google" && state.deps.some((d) => d.name === "Google Workspace")) name = "Google Workspace";
       addDep(name, m[2], "TXT " + t.split("=")[0], "dns");
     }
+    // Microsoft 365 bought through GoDaddy: tenant named NETORGFT####.onmicrosoft.com.
+    // GoDaddy then controls the email tenant as well as DNS, and the secureserver SPF include is the same service.
+    const netorg = txts.find((t) => /^NETORGFT\d+\.onmicrosoft\.com$/i.test(t));
+    if (netorg) {
+      state.deps = state.deps.filter((d) => !(d.name === "GoDaddy Email" && d.source === "dns" && d.evidence.every((e) => /secureserver/i.test(e))));
+      const m = addDep("Microsoft 365", "identity", "TXT " + netorg, "dns");
+      m.name = "Microsoft 365 (bought through GoDaddy)";
+      m.flags.push("Bought through GoDaddy, so your GoDaddy login controls your email admin as well as your DNS. That one account is a single key to most of the business.");
+    }
+
     // Google site verification without Workspace mail is usually Search Console, not critical
     const g = state.deps.find((d) => d.name === "Google" && d.source === "dns");
     if (g) { g.name = "Google (Search Console / services)"; g.cat = "saas"; g.impact = 0; }
