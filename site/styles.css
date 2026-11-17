@@ -150,7 +150,21 @@ h3 { font-size: 1.125rem; font-weight: 600; color: var(--g100); }
 .q-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1rem; }
 @media (max-width: 768px) { .q-grid { grid-template-columns: 1fr; } }
 .q label { display: block; font-size: .75rem; color: var(--g500); text-transform: uppercase; letter-spacing: .025em; margin-bottom: .375rem; }
-select { width: 100%; font: inherit; font-size: .875rem; color: var(--g100); background: var(--g950); border: 1px solid var(--g700); border-radius: .375rem; padding: .5rem .625rem; }
+/* Selects: custom chevron so they read as dropdowns everywhere (iOS/Android render bare selects as plain boxes) */
+select {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; min-height: 2.75rem; cursor: pointer;
+  font: inherit; font-size: .875rem; color: var(--g100);
+  background-color: var(--g800);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232dd4bf' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right .75rem center; background-size: 1rem;
+  border: 1px solid var(--g600); border-radius: .5rem;
+  padding: .625rem 2.5rem .625rem .75rem;
+  transition: border-color .15s, background-color .15s;
+}
+select:hover { border-color: var(--p600); background-color: var(--g700); }
+select option { background: var(--g900); color: var(--g100); }
+@media (max-width: 768px) { select { font-size: 1rem; min-height: 3rem; } } /* 16px stops iOS zoom-on-focus */
 .g-row { display: grid; grid-template-columns: 1fr 13rem; gap: 1.5rem; align-items: center; padding: 1rem 0; border-top: 1px solid var(--g800); }
 .g-row:first-child { border-top: 0; padding-top: 0; }
 .g-row:last-child { padding-bottom: 0; }
