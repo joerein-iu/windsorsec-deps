@@ -200,6 +200,10 @@ DC.CATS = {
   security:  { label: "Security agent",  impact: 2 },
   backup:    { label: "Backups",         impact: 1 },
   passwords: { label: "Password manager",impact: 2 },
+  field:     { label: "Field operations", impact: 2 },
+  dispatch:  { label: "Scheduling / dispatch", impact: 2 },
+  portal:    { label: "Outside portal",  impact: 2 },
+  specialty: { label: "Specialty software", impact: 2 },
   other:     { label: "Other",           impact: 1 }
 };
 
@@ -217,7 +221,12 @@ DC.MANUAL = [
   { name: "Antivirus / EDR agent", cat: "security" },
   { name: "Backup service", cat: "backup" },
   { name: "Online store / booking site", cat: "web" },
-  { name: "Team chat (Slack, Teams)", cat: "chat" }
+  { name: "Team chat (Slack, Teams)", cat: "chat" },
+  { name: "Field devices & mobile data (tablets, hotspots)", cat: "field" },
+  { name: "Scheduling, dispatch or job tracking", cat: "dispatch" },
+  { name: "GPS / fleet tracking", cat: "field" },
+  { name: "Customer, vendor or agency portals (orders, permits, results)", cat: "portal" },
+  { name: "Specialty software (CAD, GIS, estimating, design)", cat: "specialty" }
 ];
 
 /* ---------- Per-dependency questions ---------- */

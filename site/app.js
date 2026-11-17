@@ -448,6 +448,10 @@
       case "payroll": return "Know the deadline by which payroll must run, and the vendor's manual or emergency process if the system is down that day.";
       case "it": return "Make sure you, not only the provider, hold admin credentials to your own systems, and keep a backup contact for emergencies.";
       case "passwords": return "Make sure the emergency kit and recovery codes for the password manager are stored offline, and that two people can recover the account.";
+      case "field": return "Keep a few devices set up to work offline (downloaded forms, maps and job details), and have a second carrier's hotspot for crews in weak-signal areas.";
+      case "dispatch": return "Print or export the next day's schedule and job details every evening so crews can still roll if the system is down in the morning.";
+      case "portal": return "Know the portal's phone or email fallback for urgent submissions, and keep copies of anything you'd need to resubmit.";
+      case "specialty": return "Know how licenses are activated (and whether they work offline), keep installers and license keys somewhere safe, and back up project files outside the app.";
       default: return `Write down how you'd work for a day without ${d.name}, who to call, and where its status page is. Test the plan once.`;
     }
   }
