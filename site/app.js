@@ -512,6 +512,13 @@
       map.lastChild.querySelector(".bar > span").style.width = exposure + "%";
     }
 
+    // Reach-out link: pre-filled email the user reviews in their own mail app
+    const subj = "Dependency Check" + (state.domain ? ": " + state.domain : "");
+    const body = "Hi Windsor Security,\n\nI ran Dependency Check" + (state.domain ? " on " + state.domain : "") +
+      " and would like to talk through the results.\n\nTop items from my report:\n" +
+      F.slice(0, 3).map((f, i) => `${i + 1}. ${f.title}`).join("\n") + "\n\nThanks,\n";
+    $("#reach-out").href = "mailto:hello@windsorsec.com?subject=" + encodeURIComponent(subj) + "&body=" + encodeURIComponent(body);
+
     $("#report").hidden = false;
     $("#report").scrollIntoView({ behavior: "smooth" });
   }
